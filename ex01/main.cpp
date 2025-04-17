@@ -6,12 +6,11 @@
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 18:00:56 by inowak--          #+#    #+#             */
-/*   Updated: 2025/04/17 10:34:53 by inowak--         ###   ########.fr       */
+/*   Updated: 2025/04/17 10:34:48 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "BitcoinExchange.hpp"
-# include "colors.hpp"
+# include "RPN.hpp"
 
 int main(int argc, char **argv)
 {
@@ -19,7 +18,5 @@ int main(int argc, char **argv)
 
 	std::string file = argv[1];
 
-	BitcoinExchange btc;
 
-	btc.process(file);
 }

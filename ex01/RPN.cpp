@@ -1,25 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   RPN.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 18:00:56 by inowak--          #+#    #+#             */
-/*   Updated: 2025/04/17 10:34:53 by inowak--         ###   ########.fr       */
+/*   Created: 2025/04/17 10:31:16 by inowak--          #+#    #+#             */
+/*   Updated: 2025/04/17 10:31:23 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "BitcoinExchange.hpp"
-# include "colors.hpp"
-
-int main(int argc, char **argv)
-{
-	if (argc != 2){ERROR_FORMAT;}
-
-	std::string file = argv[1];
-
-	BitcoinExchange btc;
-
-	btc.process(file);
-}
+# include "RPN.hpp"

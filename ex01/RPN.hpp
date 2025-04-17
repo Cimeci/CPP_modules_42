@@ -1,25 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   RPN.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 18:00:56 by inowak--          #+#    #+#             */
-/*   Updated: 2025/04/17 10:34:53 by inowak--         ###   ########.fr       */
+/*   Created: 2025/04/17 10:30:28 by inowak--          #+#    #+#             */
+/*   Updated: 2025/04/17 10:32:52 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "BitcoinExchange.hpp"
+# pragma once
+
 # include "colors.hpp"
+# include "debug.hpp"
+# include "macro.hpp"
 
-int main(int argc, char **argv)
-{
-	if (argc != 2){ERROR_FORMAT;}
+# include <algorithm>
+# include <iostream>
+# include <limits>
 
-	std::string file = argv[1];
-
-	BitcoinExchange btc;
-
-	btc.process(file);
-}

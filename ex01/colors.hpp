@@ -1,25 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   colors.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 18:00:56 by inowak--          #+#    #+#             */
-/*   Updated: 2025/04/17 10:34:53 by inowak--         ###   ########.fr       */
+/*   Created: 2025/04/07 14:37:14 by inowak--          #+#    #+#             */
+/*   Updated: 2025/04/08 10:09:19 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "BitcoinExchange.hpp"
-# include "colors.hpp"
+#pragma once
 
-int main(int argc, char **argv)
-{
-	if (argc != 2){ERROR_FORMAT;}
+# define RED	"\033[1;31m"
+# define GREEN	"\033[1;32m"
+# define ORANGE	"\033[38;5;214m"
+# define YELLOW	"\033[1;33m"
+# define PURPLE	"\033[1;35m"
+# define BLUE   "\033[1;34m"
+# define CYAN	"\033[36m"
 
-	std::string file = argv[1];
+# define BLUE_BOLD "\033[34;1m"
 
-	BitcoinExchange btc;
+# define UNDERLINE "\033[4m"
+# define BOLD "\033[1m"
 
-	btc.process(file);
-}
+# define RESET	"\033[0m"
