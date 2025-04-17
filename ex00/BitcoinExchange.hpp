@@ -6,7 +6,7 @@
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:45:01 by inowak--          #+#    #+#             */
-/*   Updated: 2025/04/16 20:27:23 by inowak--         ###   ########.fr       */
+/*   Updated: 2025/04/17 10:00:13 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "debug.hpp"
 
 # include <map>
+# include <algorithm>
 # include <iostream>
 # include <fstream>
 # include <iostream>
@@ -25,7 +26,7 @@
 # include <ctime>
 # include <cmath>
 
-# define ERROR_FORMAT std::cout << RED << "[ERROR]" << RESET << ": format : ./btc file.csv" << std::endl; return 1
+# define ERROR_FORMAT std::cout << RED << "[ERROR]" << RESET << ": format : ./btc file" << std::endl; return 1
 # define ERROR_EXTENSION std::cout << RED << "[ERROR]" << RESET << ": extension : must be in .csv" << std::endl; return 1
 # define ERROR_LOAD std::cout << RED << "[ERROR]" << RESET << ": loadDataBase : " << e.what() << std::endl;
 # define ERROR_INPUT std::cout << RED << "[ERROR]" << RESET << ": loadInputDataBase : " << e.what() << std::endl;

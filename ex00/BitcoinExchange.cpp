@@ -6,7 +6,7 @@
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:45:16 by inowak--          #+#    #+#             */
-/*   Updated: 2025/04/16 20:27:16 by inowak--         ###   ########.fr       */
+/*   Updated: 2025/04/17 10:11:30 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,21 +77,27 @@ void BitcoinExchange::process(const std::string &filePath){
 			separator = line.find("|");
 			if (separator == std::string::npos){
 				std::ostringstream oss;
-				oss << "operator : " << i << " | " << line;
+				oss << UNDERLINE << "operator" << RESET << " : " << i << " | " << line;
 				throw BitcoinException(oss.str());
 			}
 			
-			date = line.substr(0, separator - 1);
-			if (!isValidDate(date)){
+			if (line.size() < 14){
 				std::ostringstream oss;
-				oss << "date : " << i << " | " << line;
+				oss << UNDERLINE << "format" << RESET << " : " << i << " | " << line;
+				throw BitcoinException(oss.str());
+			}
+
+			date = line.substr(0, separator - 1);
+			if (!str_value.size() || !isValidDate(date)){
+				std::ostringstream oss;
+				oss << UNDERLINE << "date" << RESET << " : " << i << " | " << line;
 				throw BitcoinException(oss.str());
 			}
 			
 			str_value = line.substr(separator + 2, line.size());
-			if (!isValidValue(str_value)){
+			if (!str_value.size() || !isValidValue(str_value)){
 				std::ostringstream oss;
-				oss << "value : " << i << " | " << line;
+				oss << UNDERLINE << "value" << RESET << " : " << i << " | " << line;
 				throw BitcoinException(oss.str());
 			}
 			value = std::atof(str_value.c_str());
@@ -138,14 +144,13 @@ bool BitcoinExchange::isAllDigit(const std::string nb) const{
 	return (true);
 }
 
-struct tm t_date;
-
 std::string BitcoinExchange::decrementDate(const std::string &date) const{
 	
 	std::string Year = date.substr(0, 4);
 	std::string Month = date.substr(5, 2);
 	std::string Day = date.substr(8, 2);
 
+	struct tm t_date = {};
 	t_date.tm_year = std::atoi(Year.c_str()) - 1900;
 	t_date.tm_mon  = std::atoi(Month.c_str()) - 1;
 	t_date.tm_mday = std::atoi(Day.c_str());
@@ -173,6 +178,9 @@ bool BitcoinExchange::isValidDate(const std::string &date) const{
 	int month = std::atoi(Month.c_str());
 	int day = std::atoi(Day.c_str());
 	
+	if (year == 2022 && (month > 03 || day > 29))
+		return false;
+
 	if (date[4] != '-' || date[7] != '-' || !isAllDigit(Year) || !isAllDigit(Month) || !isAllDigit(Day))
 		return false;
 
@@ -217,7 +225,13 @@ bool BitcoinExchange::isValidDate(const std::string &date) const{
 
 bool BitcoinExchange::isValidValue(const std::string &value) const{
 	
-	if (value.find(".") == std::string::npos && (std::atol(value.c_str()) < 0 || std::atol(value.c_str()) > 1000))
+	if (std::count(value.begin(), value.end(), '.') > 1)
+		return false;
+	for (size_t i = 0; i < value.size(); i++){
+		if (!isdigit(value[i]) && value[i] != '.')
+			return false;
+	}
+	if (value.find(".") == std::string::npos && (std::atoi(value.c_str()) < 0 || std::atoi(value.c_str()) > 1000))
 		return false;
 	if (std::atof(value.c_str()) < -std::numeric_limits<float>::max() || std::atof(value.c_str()) > std::numeric_limits<float>::max())
 		return false;
