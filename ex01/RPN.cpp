@@ -31,7 +31,7 @@ RPN::RPN(const RPN &cp){ *this = cp; }
 
 RPN &RPN::operator=(const RPN &op){
 	if (this != &op)
-		nbStack = op.nbStack;
+		stack = op.stack;
 	return *this;
 }
 
@@ -40,108 +40,99 @@ RPN::~RPN(){}
 //* --------- // ALGORITHM | PUBLIC // --------- *//
 
 void RPN::process(const std::string input) {
-	try {loadStack(input);}
+	try {isValidInput(input);}
 	catch (RPNEXCEPTION &e){ERROR_LOADSTACK;}
-	
-	DEBUG_NBSTACK;
-	DEBUG_OPSTACK;
 
-	try {calcul();}
+	try {calcul(input);}
 	catch (RPNEXCEPTION &e){ERROR_CALCUL;}
+
+	std::cout << "Result: " << stack.top() << std::endl;
 }
 
 //* --------- // ALGORITHM | PRIVATE // --------- *//
 
-std::string reverseString(const std::string& input) {
-	std::string reversed;
-	for (int i = input.length() - 1; i >= 0; --i) {
-		reversed += input[i];
-	}
-	return reversed;
+bool isOperator(const char c){
+	if (c == '+' || c == '-' || c == '/' || c == '*' )
+		return true;
+	return false;
 }
 
-void RPN::loadStack(const std::string &input){
-
-	std::string res;
-	size_t savepos;
-	std::string rev  = reverseString(input);
-
-	if (rev.find(" ") == std::string::npos)
-		throw RPNEXCEPTION("no space");
-
-	res = rev.substr(0, rev.find(" "));
-	if (res == "+" || res == "-" || res == "/" || res == "*"){
-		opStack.push(res);
-	}
-	else if (std::atoi(res.c_str()) >= 0 && std::atoi(res.c_str()) <= 9){
-		nbStack.push(std::atoi(res.c_str()));
-	}
-	savepos = rev.find(" ");
-	for (size_t i = 0; i <= rev.size(); i++)
-	{
-		size_t newsave = rev.find(" ", savepos + 1);
-		if (newsave == std::string::npos)
-			break;
-		res = rev.substr(savepos + 1, newsave - savepos - 1);
-		if (res == "+" || res == "-" || res == "/" || res == "*"){
-			opStack.push(res);
-		}
-		else if (std::atoi(res.c_str()) >= 0 && std::atoi(res.c_str()) <= 9){
-			nbStack.push(std::atoi(res.c_str()));
-		}
-		else
-			throw RPNEXCEPTION(res + " is invalid");
-		savepos = newsave;
-	}
-	// après la boucle for
-	res = rev.substr(savepos + 1);
-	if (!res.empty())
-	{
-		if (res == "+" || res == "-" || res == "/" || res == "*"){
-			opStack.push(res);
-		}
-		else if (std::atoi(res.c_str()) >= 0 && std::atoi(res.c_str()) <= 9){
-			nbStack.push(std::atoi(res.c_str()));
-		}
-		else
-			throw RPNEXCEPTION(res + " is invalid");
+void RPN::isValidInput(const std::string &input) const{
+	if (input.size() < 2)
+		throw RPNEXCEPTION("size invalid");
+	for (size_t i = 0; i < input.size(); i++){
+		if (input[i] != ' ' && !isdigit(input[i]) && !isOperator(input[i]))
+			throw RPNEXCEPTION("character false : " + input[i]);
 	}
 }
 
-void RPN::calcul(){
+void RPN::loadStack(const std::string &input, size_t op, size_t lastOp) {
+	for (size_t i = lastOp; i < op; i++){
+		if (isdigit(input[i]))
+			stack.push(std::atoi(&input[i]));
+	}
+}
+
+void RPN::operation(const char opfind){
+	char op[4] = {'+', '-', '/', '*'};
 	double nb1;
 	double nb2;
-	std::string op[4] = {"+", "-", "/", "*"};
+	size_t i;
 
-	while ((opStack.size() != 0) && (nbStack.size() != 1))
-	{
-		size_t j = 0;
-		while (j < 4 && op[j] != opStack.top())
-			j++;
-		nb1 = nbStack.top();
-		nbStack.pop();
-		nb2 = nbStack.top();
-		nbStack.pop();
-		DEBUG_SEPARATION
-		DEBUG_CALCUL
-		opStack.pop();
-		switch (j){
-			case 0: nbStack.push(nb1 + nb2);break;
-			case 1: nbStack.push(nb1 - nb2);break;
-			case 2:
-				if (nb2 != 0) 
-					nbStack.push(nb1 / nb2);
-				else
-					throw RPNEXCEPTION("division by 0");
-				break;
-			case 3: nbStack.push(nb1 * nb2);break;
-		}
-		DEBUG_NBSTACK
+	DEBUG_STACK;
+	if (stack.size() < 2)
+		throw RPNEXCEPTION("stack not have 2 numbers");
+	for (i = 0; opfind != op[i] && i < 4; i++);
+	nb2 = stack.top();
+	stack.pop();
+	nb1 = stack.top();
+	stack.pop();
+	DEBUG_PRINT(nb1 << op[i] << nb2)
+	switch (i){
+		case 0: stack.push(nb1 + nb2);break;
+		case 1: stack.push(nb1 - nb2);break;
+		case 2:
+			if (nb2 == 0) {throw RPNEXCEPTION("division by 0");}
+			stack.push(nb1 / nb2);break;
+		case 3: stack.push(nb1 * nb2);break;
 	}
-	if (nbStack.size() > 1)
-		throw RPNEXCEPTION("some numbers remain");
-	if (opStack.size() > 0)
-		throw RPNEXCEPTION("some operator remain");
 	DEBUG_SEPARATION
-	std::cout << GREEN << "result: " << nbStack.top() << RESET << std::endl;
+}
+
+void RPN::isEnough(const std::string &input)
+{
+	size_t nbOp = 0;
+	for (size_t i = 0; i < input.size(); i++)
+	{
+		if (isOperator(input[i]))
+			nbOp++;
+	}
+	size_t nbNumber = 0;
+	for (size_t i = 0; i < input.size(); i++)
+	{
+		if (isdigit(input[i]))
+			nbNumber++;
+	}
+
+	DEBUG_PRINT(nbOp + 1)
+	DEBUG_PRINT(stack.size())
+	if (nbNumber < (nbOp + 1))
+		throw RPNEXCEPTION("not enough number");
+	if (nbNumber > (nbOp + 1))
+		throw RPNEXCEPTION("not enough operator");
+}
+
+void RPN::calcul(const std::string &input){
+	size_t opPos = 0;
+	
+	isEnough(input);
+	for (size_t i = 1; i < input.size(); i++)
+	{
+		if (isOperator(input[i]))
+		{
+			loadStack(input, i, opPos);
+			operation(input[i]);
+			opPos = i;
+		}
+	}	
 }

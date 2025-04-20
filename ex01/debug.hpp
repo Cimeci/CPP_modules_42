@@ -19,15 +19,14 @@
 
 
 #if DEBUG_MODE
-    # define DEBUG_NBSTACK 	std::cout << std::endl << "nbStack" << std::endl;std::stack<long double> tmp1 = nbStack;while (!tmp1.empty()) {std::cout << tmp1.top() << std::endl;tmp1.pop();};
-    # define DEBUG_OPSTACK 	std::cout << std::endl << "opStack" << std::endl;std::stack<std::string> tmp2 = opStack;while (!tmp2.empty()) {std::cout << tmp2.top() << std::endl;tmp2.pop();};
-	# define DEBUG_CALCUL std::cout << nb1 << opStack.top() << nb2 << std::endl;
-
-	# define DEBUG_SEPARATION std::cout << std::endl << "--------------------" << std::endl << std::endl;
+    # define DEBUG_PRINT(x) std::cout << BLUE << "[DEBUG] " << RESET <<  x << std::endl;
+    # define DEBUG_STACK std::cout << BLUE << "[DEBUG] " << RESET << std::endl << "stack" << std::endl;std::stack<double> tmp1 = stack;while (!tmp1.empty()) {std::cout << tmp1.top() << std::endl;tmp1.pop();}std::cout << std::endl;
+	# define DEBUG_CALCUL std::cout << BLUE << "[DEBUG] " << RESET << nb1 << opStack.top() << nb2 << std::endl;
+    # define DEBUG_SEPARATION std::cout << std::endl << "--------------------" << std::endl << std::endl;
 
 #else
-    # define DEBUG_NBSTACK
-	# define DEBUG_OPSTACK 
+    # define DEBUG_PRINT(x)
+    # define DEBUG_STACK
 	# define DEBUG_CALCUL
 	# define DEBUG_SEPARATION
 

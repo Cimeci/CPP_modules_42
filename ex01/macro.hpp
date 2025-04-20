@@ -10,6 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# define ERROR_FORMAT std::cout << RED << "[ERROR]" << RESET << "./RPN \"expression\"" << std::endl; return 1
-# define ERROR_LOADSTACK std::cout << RED << "[ERROR]" << RESET << "loadStack: " << e.what() << std::endl
-# define ERROR_CALCUL std::cout << RED << "[ERROR]" << RESET << "calcul: " << e.what() << std::endl
+# define ERROR_FORMAT std::cout << RED << "[ERROR]" << RESET << " ./RPN \"expression\"" << std::endl; return 1
+# define ERROR_LOADSTACK std::cout << RED << "[ERROR]" << RESET << " isValidInput: " << e.what() << std::endl; return;
+# define ERROR_CALCUL std::cout << RED << "[ERROR]" << RESET << " calcul: " << e.what() << std::endl; return;
