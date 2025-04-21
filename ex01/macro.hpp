@@ -10,5 +10,5 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# define ERROR_FORMAT std::cout << RED << "[ERROR] " << RESET << "./RPN \"expression\"" << std::endl; return 1
-# define ERROR_PROCESS std::cout << RED << "[ERROR] " << RESET << e.what() << std::endl; return 1;
+# define ERROR_FORMAT std::cerr << RED << "[ERROR] " << RESET << "./RPN \"expression\"" << std::endl; return 1
+# define ERROR_PROCESS std::cerr << RED << "[ERROR] " << RESET << e.what() << std::endl; return 1;
