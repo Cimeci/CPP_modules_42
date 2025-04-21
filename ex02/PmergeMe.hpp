@@ -19,7 +19,9 @@
 
 # include <iostream>
 # include <vector>
+# include <deque>
 # include <algorithm>
+# include <ctime>
 
 class PMERGEMEEXCEPTION : public std::exception {
 	private:
@@ -32,9 +34,19 @@ class PMERGEMEEXCEPTION : public std::exception {
 
 class PmergeMe{
 	private:
-		
-		void loadContainer(const char **argv) const;
-		bool isValid(const std::string nb) const;
+		std::vector<int> Cvector;
+		std::deque<int> Cdeque;
+
+		std::time_t Vstart;
+		std::time_t Dstart;
+
+		size_t size;
+
+		void loadContainer(char **argv);
+		void isValid(const std::string nb) const;
+
+		template<typename T>
+		void sort(T container);
 
 	public:
 		PmergeMe();
@@ -42,6 +54,6 @@ class PmergeMe{
 		PmergeMe &operator=(const PmergeMe &op);
 		~PmergeMe();
 
-		void process(const char **argv);
+		void process(char **argv);
 };
 

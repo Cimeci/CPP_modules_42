@@ -10,6 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# define ERROR_FORMAT std::cout << RED << "[ERROR]" << RESET << "./PmergeMe nb nb nb nb nb nb ..." << std::endl; return 1
-# define ERROR_INPUT std::cout << RED << "[ERROR]" << RESET << e.what() << " is a invalid number" << std::endl; return 1
-# define ERROR_CALCUL std::cout << RED << "[ERROR]" << RESET << "calcul: " << e.what() << std::endl
+# define ERROR_FORMAT std::cerr << RED << "[ERROR]" << RESET << "./PmergeMe nb nb nb nb nb nb ..." << std::endl; return 1
+# define ERROR_INPUT  std::cerr << RED << "[ERROR]" << RESET << "loadContainer: " << e.what() << std::endl
+# define ERROR_SORT std::cerr << RED << "[ERROR]" << RESET << "sort: " << e.what() << std::endl
