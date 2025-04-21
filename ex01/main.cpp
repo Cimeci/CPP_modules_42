@@ -20,5 +20,6 @@ int main(int argc, char **argv)
 
 	RPN rpn;
 
-	rpn.process(input);
+	try{rpn.process(input);}
+	catch (RPNEXCEPTION &e){ERROR_PROCESS;}
 }

@@ -40,40 +40,25 @@ RPN::~RPN(){}
 //* --------- // ALGORITHM | PUBLIC // --------- *//
 
 void RPN::process(const std::string input) {
-	try {isValidInput(input);}
-	catch (RPNEXCEPTION &e){ERROR_LOADSTACK;}
 
-	try {calcul(input);}
-	catch (RPNEXCEPTION &e){ERROR_CALCUL;}
+	if (input.size() < 2)
+		throw RPNEXCEPTION("size invalid");
 
+	for (size_t i = 0; i < input.size(); i++){
+		if (input[i] != ' ' && !isdigit(input[i]) && !isOperator(input[i]))
+			throw RPNEXCEPTION("character false : " + std::string(1, input[i]));
+		if (isdigit(input[i]))
+			stack.push(std::atoi(&input[i]));
+		if (isOperator(input[i]))
+			calcul(input[i]);
+	}
+	isEnough(input);
 	std::cout << "Result: " << stack.top() << std::endl;
 }
 
 //* --------- // ALGORITHM | PRIVATE // --------- *//
 
-bool isOperator(const char c){
-	if (c == '+' || c == '-' || c == '/' || c == '*' )
-		return true;
-	return false;
-}
-
-void RPN::isValidInput(const std::string &input) const{
-	if (input.size() < 2)
-		throw RPNEXCEPTION("size invalid");
-	for (size_t i = 0; i < input.size(); i++){
-		if (input[i] != ' ' && !isdigit(input[i]) && !isOperator(input[i]))
-			throw RPNEXCEPTION("character false : " + input[i]);
-	}
-}
-
-void RPN::loadStack(const std::string &input, size_t op, size_t lastOp) {
-	for (size_t i = lastOp; i < op; i++){
-		if (isdigit(input[i]))
-			stack.push(std::atoi(&input[i]));
-	}
-}
-
-void RPN::operation(const char opfind){
+void RPN::calcul(const char opfind){
 	char op[4] = {'+', '-', '/', '*'};
 	double nb1;
 	double nb2;
@@ -99,40 +84,26 @@ void RPN::operation(const char opfind){
 	DEBUG_SEPARATION
 }
 
+bool RPN::isOperator(const char c){
+	if (c == '+' || c == '-' || c == '/' || c == '*' )
+		return true;
+	return false;
+}
+
 void RPN::isEnough(const std::string &input)
 {
 	size_t nbOp = 0;
-	for (size_t i = 0; i < input.size(); i++)
-	{
+	for (size_t i = 0; i < input.size(); i++){
 		if (isOperator(input[i]))
 			nbOp++;
 	}
 	size_t nbNumber = 0;
-	for (size_t i = 0; i < input.size(); i++)
-	{
+	for (size_t i = 0; i < input.size(); i++){
 		if (isdigit(input[i]))
 			nbNumber++;
 	}
-
-	DEBUG_PRINT(nbOp + 1)
-	DEBUG_PRINT(stack.size())
 	if (nbNumber < (nbOp + 1))
 		throw RPNEXCEPTION("not enough number");
 	if (nbNumber > (nbOp + 1))
 		throw RPNEXCEPTION("not enough operator");
-}
-
-void RPN::calcul(const std::string &input){
-	size_t opPos = 0;
-	
-	isEnough(input);
-	for (size_t i = 1; i < input.size(); i++)
-	{
-		if (isOperator(input[i]))
-		{
-			loadStack(input, i, opPos);
-			operation(input[i]);
-			opPos = i;
-		}
-	}	
 }

@@ -35,14 +35,10 @@ class RPN{
 	private:
 		std::stack<double> stack;
 
-		void loadStack(const std::string &input, size_t op, size_t lastOp);
-		void calcul(const std::string &input);
-
-		// int stoi(const std::string &nb);
-		void operation(const char op);
+		void calcul(const char op);
 
 		void isEnough(const std::string &input);
-		void isValidInput(const std::string &input) const;
+		bool isOperator(const char c);
 
 	public:
 		RPN();
