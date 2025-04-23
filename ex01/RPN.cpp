@@ -6,7 +6,7 @@
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 10:31:16 by inowak--          #+#    #+#             */
-/*   Updated: 2025/04/18 15:46:29 by inowak--         ###   ########.fr       */
+/*   Updated: 2025/04/23 15:58:14 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,9 @@ void RPN::process(const std::string input) {
 	for (size_t i = 0; i < input.size(); i++){
 		if (input[i] != ' ' && !isdigit(input[i]) && !isOperator(input[i]))
 			throw RPNEXCEPTION("character false : " + std::string(1, input[i]));
-		if (isdigit(input[i]))
-			stack.push(std::atoi(&input[i]));
+		if (isdigit(input[i])){
+			DEBUG_PRINT(input[i] - '0');
+			stack.push(input[i] - '0');}
 		if (isOperator(input[i]))
 			calcul(input[i]);
 	}
