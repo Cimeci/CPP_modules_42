@@ -6,7 +6,7 @@
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:51:51 by inowak--          #+#    #+#             */
-/*   Updated: 2025/04/22 16:00:13 by inowak--         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:52:58 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void PmergeMe::process(char **argv){
 
 	try{
 		Vstart = clock();
-		DEBUG_PRINT(Vstart);
+		DEBUG_PRINT_CONTAINER(Cvector);
 		DEBUG_SEPARATION;
 		sort(Cvector);
 	}
@@ -64,7 +64,7 @@ void PmergeMe::process(char **argv){
 
 	try{
 		Dstart = clock();
-		DEBUG_PRINT(Dstart);
+		DEBUG_PRINT_CONTAINER(Cdeque);;
 		DEBUG_SEPARATION;
 		sort(Cdeque);
 	}
@@ -82,7 +82,7 @@ void PmergeMe::process(char **argv){
 	std::cout << "Time to process a range of " << size << " elements with std::[deque] : " << std::setprecision(10) << Dduration_us << " us" << std::endl;
 }
 
-//* --------- // ALGORITHM | PRIVATE // --------- *//
+//* --------- // UTILS | PRIVATE // --------- *//
 
 void PmergeMe::loadContainer(char **argv){
 
@@ -95,8 +95,10 @@ void PmergeMe::loadContainer(char **argv){
 		Cdeque.push_back(std::atoi(argv[i]));
 	}
 	isPair = true;
-	if (size % 2 != 0)
+	if (size % 2 != 0){
 		isPair = false;
+		loneNumber = Cvector.back();
+	}
 }
 
 void PmergeMe::isValid(const std::string nb) const{
@@ -123,6 +125,39 @@ bool isSorted(Iterator begin, Iterator end){
 	return true;
 }
 
+//* --------- // SORT | PRIVATE // --------- *//
+
+std::vector<size_t> PmergeMe::jacobsthal(size_t n){
+	std::vector<size_t> container;
+
+	container.push_back(0);
+	container.push_back(1);
+	
+	for (size_t i = 2; i <= n; i++)
+	{
+		container.push_back(container[i - 1] + 2 * container[i - 2]);
+	}
+	return container;
+}
+
+std::vector<size_t> PmergeMe::getJacobsthalInsertionOrder(size_t n){
+	std::vector<size_t> order;
+	std::vector<size_t> jaco = jacobsthal(n);
+
+	for (size_t i = 0; i < jaco.size(); ++i){
+		if (jaco[i] < n)
+			order.push_back(jaco[i]);
+	}
+
+	for (size_t i = 0; i < n; ++i){
+		if (std::find(order.begin(), order.end(), i) == order.end())
+			order.push_back(i);
+	}
+	return order;
+}
+
+
+
 template<typename T>
 void PmergeMe::sort(T &container){
 
@@ -137,22 +172,39 @@ void PmergeMe::sort(T &container){
 			std::swap(a, b);
 		pairs.push_back(std::make_pair(a, b));
 	}
+	for (size_t j = 0; j < pairs.size(); ++j)
+		std::cout << "(" << pairs[j].first << "," << pairs[j].second << ") ";
+	std::cout << std::endl;
+
 
 	T large;
 	T small;
 	for (size_t j = 0; j < pairs.size(); ++j){
+		DEBUG_PRINT("pairs[j].first");
+		DEBUG_PRINT(pairs[j].first);
 		large.push_back(pairs[j].first);
-		small.push_back(pairs[j].second);	
+		
+		DEBUG_PRINT("pairs[j].second");
+		DEBUG_PRINT(pairs[j].second);
+		small.push_back(pairs[j].second);
 	}
-	
 
 	if (!(isSorted(large.begin(), large.end())))
 		sort(large);
 
-	for (size_t i = 0; i < small.size(); ++i){
-		typename T::iterator pos = std::lower_bound(large.begin(), large.end(), small[i]);
-		large.insert(pos, small[i]);
+	std::vector<size_t> insertionOrder = getJacobsthalInsertionOrder(small.size());
+	for (size_t i = 0; i < insertionOrder.size(); ++i) {
+		int value = small[insertionOrder[i]];
+		typename T::iterator pos = std::lower_bound(large.begin(), large.end(), value);
+		large.insert(pos, value);
+		DEBUG_PRINT_CONTAINER(large);
 	}
+	if (!isPair && container.size() == Cvector.size()){
+		std::cout << "LoneNumber: " << loneNumber << std::endl;
+		typename T::iterator pos = std::lower_bound(large.begin(), large.end(), loneNumber);
+		large.insert(pos, loneNumber);
+	}
+		
 
 	container.clear();
 	container.insert(container.end(), large.begin(), large.end());

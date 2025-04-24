@@ -6,7 +6,7 @@
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:47:42 by inowak--          #+#    #+#             */
-/*   Updated: 2025/04/22 15:54:58 by inowak--         ###   ########.fr       */
+/*   Updated: 2025/04/24 14:45:11 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,10 @@ class PmergeMe{
 
 		size_t size;
 		bool isPair;
+		int	loneNumber;
+
+		std::vector<size_t> jacobsthal(size_t n);
+		std::vector<size_t> getJacobsthalInsertionOrder(size_t n);
 
 		void loadContainer(char **argv);
 		void isValid(const std::string nb) const;
