@@ -6,7 +6,7 @@
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:51:51 by inowak--          #+#    #+#             */
-/*   Updated: 2025/04/24 15:52:58 by inowak--         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:20:34 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ void PmergeMe::process(char **argv){
 	}
 	catch(PMERGEMEEXCEPTION &e){ERROR_SORT;}
 
+	std::cout << std::endl << "------------------------------------\n" << std::endl;
+
 	try{
 		Dstart = clock();
 		DEBUG_PRINT_CONTAINER(Cdeque);;
@@ -93,11 +95,6 @@ void PmergeMe::loadContainer(char **argv){
 		isValid(std::string(argv[i]));
 		Cvector.push_back(std::atoi(argv[i]));
 		Cdeque.push_back(std::atoi(argv[i]));
-	}
-	isPair = true;
-	if (size % 2 != 0){
-		isPair = false;
-		loneNumber = Cvector.back();
 	}
 }
 
@@ -143,71 +140,82 @@ std::vector<size_t> PmergeMe::jacobsthal(size_t n){
 std::vector<size_t> PmergeMe::getJacobsthalInsertionOrder(size_t n){
 	std::vector<size_t> order;
 	std::vector<size_t> jaco = jacobsthal(n);
+	std::set<size_t> seen;  // pour garder trace des indices déjà ajoutés
 
 	for (size_t i = 0; i < jaco.size(); ++i){
-		if (jaco[i] < n)
+		if (jaco[i] < n && seen.find(jaco[i]) == seen.end()) {
 			order.push_back(jaco[i]);
+			seen.insert(jaco[i]);
+		}
 	}
 
 	for (size_t i = 0; i < n; ++i){
-		if (std::find(order.begin(), order.end(), i) == order.end())
+		if (seen.find(i) == seen.end()) {
 			order.push_back(i);
+			seen.insert(i);
+		}
 	}
 	return order;
 }
 
 
-
 template<typename T>
 void PmergeMe::sort(T &container){
+    if (container.size() <= 1)
+        return;
 
-	std::vector<std::pair<int, int> > pairs;
+    T main_chain;
+    T pend;
+    bool isPair = true;
+    int loneNumber = -1;
 
-	size_t i = 0;
-	for (; i + 1 < container.size(); i += 2)
-	{
-		int a = container[i];
-		int b = container[i + 1];
-		if (a < b)
-			std::swap(a, b);
-		pairs.push_back(std::make_pair(a, b));
-	}
-	for (size_t j = 0; j < pairs.size(); ++j)
-		std::cout << "(" << pairs[j].first << "," << pairs[j].second << ") ";
-	std::cout << std::endl;
+    typename T::iterator it = container.begin();
+    while (it != container.end()){
+        int first = *it;
+        ++it;
+        if (it != container.end()){
+            int second = *it;
+            ++it;
 
+            if (first > second){
+                main_chain.push_back(first);
+                pend.push_back(second);
+            }
+			else {
+                main_chain.push_back(second);
+                pend.push_back(first);
+            }
+        }
+		else {
+            isPair = false;
+            loneNumber = first;
+        }
+    }
 
-	T large;
-	T small;
-	for (size_t j = 0; j < pairs.size(); ++j){
-		DEBUG_PRINT("pairs[j].first");
-		DEBUG_PRINT(pairs[j].first);
-		large.push_back(pairs[j].first);
+    sort(main_chain);
+
+    std::vector<size_t> insertionOrder = getJacobsthalInsertionOrder(pend.size());
+
+    for (std::vector<size_t>::iterator it = insertionOrder.begin(); it != insertionOrder.end(); ++it){
+        size_t index = *it;
+        if (index >= pend.size())
+            continue;
+        int value = pend[index];
+
+        typename T::iterator pos = std::lower_bound(main_chain.begin(), main_chain.end(), value);
+		size_t insertion_index = std::distance(main_chain.begin(), pos);
+		std::cout << "insert: " << value << " at index " << insertion_index << std::endl;
+		main_chain.insert(pos, value);
 		
-		DEBUG_PRINT("pairs[j].second");
-		DEBUG_PRINT(pairs[j].second);
-		small.push_back(pairs[j].second);
-	}
+    }
 
-	if (!(isSorted(large.begin(), large.end())))
-		sort(large);
-
-	std::vector<size_t> insertionOrder = getJacobsthalInsertionOrder(small.size());
-	for (size_t i = 0; i < insertionOrder.size(); ++i) {
-		int value = small[insertionOrder[i]];
-		typename T::iterator pos = std::lower_bound(large.begin(), large.end(), value);
-		large.insert(pos, value);
-		DEBUG_PRINT_CONTAINER(large);
+	if (!isPair){
+		typename T::iterator pos = std::lower_bound(main_chain.begin(), main_chain.end(), loneNumber);
+		size_t lone_index = std::distance(main_chain.begin(), pos);
+		std::cout << "Impair, insert: " << loneNumber << " at index " << lone_index << std::endl;
+		main_chain.insert(pos, loneNumber);		
 	}
-	if (!isPair && container.size() == Cvector.size()){
-		std::cout << "LoneNumber: " << loneNumber << std::endl;
-		typename T::iterator pos = std::lower_bound(large.begin(), large.end(), loneNumber);
-		large.insert(pos, loneNumber);
-	}
-		
+	
 
-	container.clear();
-	container.insert(container.end(), large.begin(), large.end());
-	DEBUG_PAIRS;
-	DEBUG_SEPARATION;
+    container = main_chain;
 }

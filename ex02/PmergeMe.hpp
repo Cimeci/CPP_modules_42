@@ -6,7 +6,7 @@
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:47:42 by inowak--          #+#    #+#             */
-/*   Updated: 2025/04/24 14:45:11 by inowak--         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:19:26 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <ctime>
 # include <iomanip>
 # include <limits>
+# include <set>
 
 class PMERGEMEEXCEPTION : public std::exception {
 	private:
@@ -43,8 +44,6 @@ class PmergeMe{
 		clock_t Dstart;
 
 		size_t size;
-		bool isPair;
-		int	loneNumber;
 
 		std::vector<size_t> jacobsthal(size_t n);
 		std::vector<size_t> getJacobsthalInsertionOrder(size_t n);
@@ -63,4 +62,3 @@ class PmergeMe{
 
 		void process(char **argv);
 };
-
