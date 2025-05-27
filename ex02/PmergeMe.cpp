@@ -6,7 +6,7 @@
 /*   By: inowak-- <inowak--@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 15:51:51 by inowak--          #+#    #+#             */
-/*   Updated: 2025/05/26 17:20:34 by inowak--         ###   ########.fr       */
+/*   Updated: 2025/05/27 13:53:41 by inowak--         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void PmergeMe::process(char **argv){
 	}
 	catch(PMERGEMEEXCEPTION &e){ERROR_SORT;}
 
-	std::cout << std::endl << "------------------------------------\n" << std::endl;
+	DEBUG_PRINT("\n------------------------------------\n\n");
 
 	try{
 		Dstart = clock();
@@ -130,44 +130,51 @@ std::vector<size_t> PmergeMe::jacobsthal(size_t n){
 	container.push_back(0);
 	container.push_back(1);
 	
+	//* n = x - 1 + 2(x - 2) *//
 	for (size_t i = 2; i <= n; i++)
-	{
 		container.push_back(container[i - 1] + 2 * container[i - 2]);
-	}
 	return container;
 }
 
-std::vector<size_t> PmergeMe::getJacobsthalInsertionOrder(size_t n){
-	std::vector<size_t> order;
-	std::vector<size_t> jaco = jacobsthal(n);
-	std::set<size_t> seen;  // pour garder trace des indices déjà ajoutés
+std::vector<size_t> PmergeMe::getJacobsthalInsertionOrder(size_t n) {
+    if (n == 0)
+		return std::vector<size_t>();
+    
+    std::vector<size_t> order;
+    std::vector<size_t> jaco = jacobsthal(20);
 
-	for (size_t i = 0; i < jaco.size(); ++i){
-		if (jaco[i] < n && seen.find(jaco[i]) == seen.end()) {
-			order.push_back(jaco[i]);
-			seen.insert(jaco[i]);
-		}
-	}
-
-	for (size_t i = 0; i < n; ++i){
-		if (seen.find(i) == seen.end()) {
-			order.push_back(i);
-			seen.insert(i);
-		}
-	}
-	return order;
+    //* start by 0 *//
+    order.push_back(0);
+    if (n == 1)
+		return order;
+    
+    size_t jaco_index = 2;
+    
+    while (order.size() < n && jaco_index < jaco.size()) {
+        size_t limit = std::min(jaco[jaco_index], n - 1);
+        size_t start = jaco[jaco_index - 1];
+        
+		//* Add elements in descending order from limit to start+1 *//
+        //* (start is excluded because it belongs to the previous group, except for the first group) *//
+        for (size_t i = limit; i > start && order.size() < n; --i)
+            order.push_back(i);
+        jaco_index++;
+    }
+    
+    return order;
 }
 
-
 template<typename T>
-void PmergeMe::sort(T &container){
+void PmergeMe::sort(T &container) {
     if (container.size() <= 1)
         return;
 
     T main_chain;
     T pend;
-    bool isPair = true;
+    bool hasOdd = false;
     int loneNumber = -1;
+
+//* 1) Pairs *//
 
     typename T::iterator it = container.begin();
     while (it != container.end()){
@@ -181,41 +188,74 @@ void PmergeMe::sort(T &container){
                 main_chain.push_back(first);
                 pend.push_back(second);
             }
-			else {
+			else{
                 main_chain.push_back(second);
                 pend.push_back(first);
             }
         }
-		else {
-            isPair = false;
+		else{
+            hasOdd = true;
             loneNumber = first;
         }
     }
 
+    DEBUG_PRINT("Main chain before recursive sort:");
+    DEBUG_PRINT_CONTAINER(main_chain);
+    DEBUG_PRINT("Pend before insertion:");
+    DEBUG_PRINT_CONTAINER(pend);
+
+//* 2) Recursive sorting main_chain *//
+
     sort(main_chain);
 
-    std::vector<size_t> insertionOrder = getJacobsthalInsertionOrder(pend.size());
+    DEBUG_PRINT("Main chain after recursive sort:");
+    DEBUG_PRINT_CONTAINER(main_chain);
 
-    for (std::vector<size_t>::iterator it = insertionOrder.begin(); it != insertionOrder.end(); ++it){
-        size_t index = *it;
-        if (index >= pend.size())
-            continue;
-        int value = pend[index];
+//* 3) Insert pend elements in Jacobsthal order *//
 
-        typename T::iterator pos = std::lower_bound(main_chain.begin(), main_chain.end(), value);
-		size_t insertion_index = std::distance(main_chain.begin(), pos);
-		std::cout << "insert: " << value << " at index " << insertion_index << std::endl;
-		main_chain.insert(pos, value);
+    if (!pend.empty()){
+        std::vector<size_t> insertionOrder = getJacobsthalInsertionOrder(pend.size());
+        
+		DEBUG_PRINT("Jacobsthal insertion order:");
+		# ifdef HELP
+        	for (size_t i = 0; i < insertionOrder.size(); ++i)
+         	   std::cout << insertionOrder[i] << " ";
+        	std::cout << std::endl;
+		# endif
 		
+        for (size_t i = 0; i < insertionOrder.size(); ++i){
+            size_t index = insertionOrder[i];
+            if (index >= pend.size())
+                continue;
+
+            int value = pend[index];
+            
+            //* Binary search for insertion position *//
+            typename T::iterator pos = std::lower_bound(main_chain.begin(), main_chain.end(), value);
+			# ifdef HELP
+           		size_t insertion_index = std::distance(main_chain.begin(), pos);
+            # endif
+            DEBUG_PRINT("Inserting pend[" << index << "] = " << value << " at position " << insertion_index);
+            main_chain.insert(pos, value);
+        }
     }
 
-	if (!isPair){
-		typename T::iterator pos = std::lower_bound(main_chain.begin(), main_chain.end(), loneNumber);
-		size_t lone_index = std::distance(main_chain.begin(), pos);
-		std::cout << "Impair, insert: " << loneNumber << " at index " << lone_index << std::endl;
-		main_chain.insert(pos, loneNumber);		
-	}
-	
+//* 4) Inserting the odd element *//
+
+    if (hasOdd) {
+        typename T::iterator pos = std::lower_bound(main_chain.begin(), main_chain.end(), loneNumber);
+        # ifdef HELP
+			size_t lone_index = std::distance(main_chain.begin(), pos);
+		# endif
+        DEBUG_PRINT("Inserting odd element " << loneNumber << " at position " << lone_index);
+        main_chain.insert(pos, loneNumber);
+    }
 
     container = main_chain;
+    
+//? Check is sort ?//
+
+    if (!isSorted(container.begin(), container.end())) {
+        throw PMERGEMEEXCEPTION("Sorting failed - container is not sorted");
+    }
 }
