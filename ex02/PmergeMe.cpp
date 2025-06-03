@@ -56,8 +56,6 @@ void PmergeMe::process(char **argv){
 
 	try{
 		Vstart = clock();
-		DEBUG_PRINT_CONTAINER(Cvector);
-		DEBUG_SEPARATION;
 		sort(Cvector);
 	}
 	catch(PMERGEMEEXCEPTION &e){ERROR_SORT;}
@@ -66,8 +64,6 @@ void PmergeMe::process(char **argv){
 
 	try{
 		Dstart = clock();
-		DEBUG_PRINT_CONTAINER(Cdeque);;
-		DEBUG_SEPARATION;
 		sort(Cdeque);
 	}
 	catch(PMERGEMEEXCEPTION &e){ERROR_SORT;}
@@ -204,24 +200,22 @@ void PmergeMe::sort(T &container) {
     DEBUG_PRINT("Pend before insertion:");
     DEBUG_PRINT_CONTAINER(pend);
 
+
 //* 2) Recursive sorting main_chain *//
+
 
     sort(main_chain);
 
+	DEBUG_PRINT(PURPLE << "\n------------------------------------\n" << RESET);
     DEBUG_PRINT("Main chain after recursive sort:");
     DEBUG_PRINT_CONTAINER(main_chain);
 
+
 //* 3) Insert pend elements in Jacobsthal order *//
+
 
     if (!pend.empty()){
         std::vector<size_t> insertionOrder = getJacobsthalInsertionOrder(pend.size());
-        
-		DEBUG_PRINT("Jacobsthal insertion order:");
-		# ifdef HELP
-        	for (size_t i = 0; i < insertionOrder.size(); ++i)
-         	   std::cout << insertionOrder[i] << " ";
-        	std::cout << std::endl;
-		# endif
 		
         for (size_t i = 0; i < insertionOrder.size(); ++i){
             size_t index = insertionOrder[i];
@@ -240,7 +234,9 @@ void PmergeMe::sort(T &container) {
         }
     }
 
+
 //* 4) Inserting the odd element *//
+
 
     if (hasOdd) {
         typename T::iterator pos = std::lower_bound(main_chain.begin(), main_chain.end(), loneNumber);
@@ -252,8 +248,10 @@ void PmergeMe::sort(T &container) {
     }
 
     container = main_chain;
-    
+   
+
 //? Check is sort ?//
+
 
     if (!isSorted(container.begin(), container.end())) {
         throw PMERGEMEEXCEPTION("Sorting failed - container is not sorted");

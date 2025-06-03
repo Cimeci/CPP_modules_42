@@ -20,7 +20,7 @@
 
 #if DEBUG_MODE
 	# define DEBUG_PRINT(x) std::cout << BLUE << "[DEBUG] " << RESET <<  x << std::endl;
-    # define DEBUG_PRINT_CONTAINER(x) 	std::cout << std::endl << "Container" << std::endl; for (size_t i = 0; i < x.size(); i++){std::cout << x[i] << std::endl;};
+    # define DEBUG_PRINT_CONTAINER(x) 	std::cout << "Container" << std::endl; for (size_t i = 0; i < x.size(); i++){std::cout << x[i] << std::endl;};
 	# define DEBUG_PAIRS for (size_t j = 0; j < pairs.size(); ++j){std::cout << "Pair[" << j << "] = (" << pairs[j].first << ", " << pairs[j].second << ")" << std::endl;};
 	# define DEBUG_SEPARATION std::cout << std::endl << "--------------------" << std::endl << std::endl;
 
