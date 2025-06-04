@@ -1,5 +1,9 @@
 All my cpp i do at 42.
 
+
+<details>
+<summary><h2>Structure</h2></summary>
+
 ```
 ├── CPP00
 │   ├── ex00
@@ -303,3 +307,4 @@ All my cpp i do at 42.
 │       └── PmergeMe.hpp
 └── README.md
 ```
+</details>
