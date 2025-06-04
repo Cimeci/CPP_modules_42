@@ -217,6 +217,12 @@ void PmergeMe::sort(T &container) {
     if (!pend.empty()){
         std::vector<size_t> insertionOrder = getJacobsthalInsertionOrder(pend.size());
 		
+		// Compléter l’ordre Jacobsthal pour couvrir tous les indices
+		for (size_t i = 0; i < pend.size(); ++i) {
+		    if (std::find(insertionOrder.begin(), insertionOrder.end(), i) == insertionOrder.end())
+		        insertionOrder.push_back(i);
+		}
+
         for (size_t i = 0; i < insertionOrder.size(); ++i){
             size_t index = insertionOrder[i];
             if (index >= pend.size())
