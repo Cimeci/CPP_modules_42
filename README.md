@@ -5,9 +5,9 @@
 <details>
 <summary><h2>CPP00</h2></summary>
 
-[subject](https://cdn.intra.42.fr/pdf/pdf/165430/fr.subject.pdf)
+### [SUBJECT](https://cdn.intra.42.fr/pdf/pdf/165430/fr.subject.pdf)
 
-[exercice](https://github.com/Cimeci/CPP_modules_42/CPP00)
+### [EXERCICE](https://github.com/Cimeci/CPP_modules_42/tree/main/CPP00)
 
 </details>
 <details>
