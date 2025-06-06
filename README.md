@@ -1,34 +1,14 @@
-All my cpp i do at 42.
+# Here are all the cpp exercises I did during my studies at 42
 
-# [cpp](https://linux.die.net/man/1/cpp)
-
-# Structure
+## Structure
 
 <details>
 <summary><h2>CPP00</h2></summary>
 
 [subject](https://cdn.intra.42.fr/pdf/pdf/165430/fr.subject.pdf)
 
-```
-├── CPP00
-│   ├── ex00
-│   │   ├── Makefile
-│   │   └── megaphone.cpp
-│   ├── ex01
-│   │   ├── Contact.cpp
-│   │   ├── Contact.hpp
-│   │   ├── main.cpp
-│   │   ├── Makefile
-│   │   ├── PhoneBook.cpp
-│   │   ├── PhoneBook.hpp
-│   │   ├── Utils.cpp
-│   │   └── Utils.hpp
-│   └── ex02
-│       ├── Account.cpp
-│       ├── Account.hpp
-│       ├── Makefile
-│       └── tests.cpp
-```
+[exercice](https://github.com/Cimeci/CPP_modules_42/CPP00)
+
 </details>
 <details>
 <summary><h2>CPP01</h2></summary>
