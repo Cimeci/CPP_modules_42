@@ -1,7 +1,5 @@
 # Here are all the cpp exercises I did during my studies at 42
 
-## Structure
-
 <details>
 <summary><h2>CPP00</h2></summary>
 
